@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Radhika!</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            margin: 0; 
+            background: linear-gradient(-45deg, #ff9a9e, #fecfef, #a1c4fd, #c2e9fb); 
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-family: 'Montserrat', sans-serif; 
+            overflow: hidden; 
+            position: relative; 
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #welcome-screen { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100vh; 
+            background: rgba(18, 18, 18, 0.95); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 9999; 
+            transition: opacity 0.8s ease, visibility 0.8s; 
+        }
+        
+        .gift-box { 
+            background: #2d2d2d; 
+            padding: 40px; 
+            border-radius: 20px; 
+            border: 2px solid #ff4757; 
+            text-align: center; 
+            color: white; 
+            cursor: pointer; 
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .gift-box:hover { transform: scale(1.05); }
+        
+        .card { 
+            background: rgba(255, 255, 255, 0.75); 
+            padding: 35px 30px; 
+            border-radius: 24px; 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px);
+            text-align: center; 
+            z-index: 10; 
+            max-width: 440px; 
+            width: 90%; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+        }
+        
+        h1 { 
+            font-family: 'Great Vibes', cursive; 
+            font-size: 3.5rem; 
+            color: #4a0e17; 
+            margin: 0 0 10px 0; 
+        }
+        
+        #counter { 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            color: #5d0c1d; 
+            margin: 20px 0; 
+            line-height: 1.6; 
+        }
+        
+        .buttons-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 12px; 
+            margin-top: 20px; 
+        }
+        
+        .surprise-btn { 
+            background: #ff4757; 
+            color: white; 
+            border: none; 
+            padding: 14px 25px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-family: 'Montserrat', sans-serif; 
+            transition: 0.3s ease; 
+            width: 85%; 
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        }
+        .surprise-btn:hover { 
+            background: #e03747; 
+            transform: translateY(-2px) scale(1.02); 
+        }
+        
+        .heart-btn { 
+            background: #ff7675; 
+            color: white; 
+            border: none; 
+            padding: 12px 20px; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-family: 'Montserrat', sans-serif; 
+            transition: 0.3s ease; 
+            width: 65%; 
+            display: none; 
+            font-size: 0.95rem; 
+            box-shadow: 0 5px 15px rgba(255, 118, 117, 0.4);
+        }
+        .heart-btn:hover { 
+            background: #d63031; 
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        #msg { 
+            font-weight: 600; 
+            color:#5d0c1d; 
+            margin-top: 25px; 
+            font-size: 1.1rem; 
+            min-height: 55px; 
+            line-height: 1.6; 
+        }
+        
+        #compliment-box { 
+            font-weight: 700; 
+            color: #ff4757; 
+            margin-top: 15px; 
+            font-size: 1.05rem; 
+            height: 25px; 
+        }
+        
+        .pop-animation {
+            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        
+        @keyframes popUp { 
+            0% { transform: scale(0.8); opacity: 0; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+        
+        #canvasLayer { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            pointer-events: none; 
+            z-index: 1; 
+        }
+        
+        #balloons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .sparkle { 
+            position: absolute; 
+            pointer-events: none; 
+            background: white; 
+            border-radius: 50%; 
+            box-shadow: 0 0 10px #fff, 0 0 20px #ff7675; 
+            animation: flyOut 1s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; 
+            z-index: 5; 
+        }
+        @keyframes flyOut { 
+            0% { opacity: 1; transform: translate(0, 0) scale(1); } 
+            100% { opacity: 0; transform: translate(var(--mx), var(--my)) scale(0); } 
+        }
+        
+        .balloon { 
+            position: absolute; 
+            bottom: -70px; 
+            width: 45px; 
+            height: 55px; 
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
+            animation: floatUp 9s linear forwards; 
+        }
+        .balloon::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: -12px; 
+            left: 22px; 
+            width: 1px; 
+            height: 12px; 
+            background: rgba(0, 0, 0, 0.15); 
+        }
+        @keyframes floatUp { 
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-60vh) rotate(10deg); }
+            100% { transform: translateY(-125vh) rotate(-10deg); } 
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="birthday-audio" src="https://assets.mixkit.co/active_storage/sfx/2691/2691-84.wav" loop preloado="auto"></audio>
+
+    <div id="welcome-screen" onclick="startSurprise()">
+        <div class="gift-box">
+            <div style="font-size: 3.5rem; margin-bottom: 10px;">🎁</div>
+            <h2>Radhika, tap to open your surprise!</h2>
+            <p style="font-size: 0.9rem; color: #aaa; margin-top: 5px;">(Sound on kijiye aur tap kijiye!)</p>
+        </div>
+    </div>
+
+    <canvas id="canvasLayer"></canvas>
+    <div id="balloons"></div>
+
+    <div class="card">
+        <h1>Happy Birthday Radhika! 🎂</h1>
+        <div id="counter">Calculating memories...</div>
+        
+        <div class="buttons-container">
+            <button id="wish-btn" class="surprise-btn" onclick="revealAndType()">Click for a Birthday Wish! ✨</button>
+            <button id="heart-clicker" class="heart-btn" onclick="showCompliment()">Click Me ❤️</button>
+        </div>
+
+        <div id="msg"></div>
+        <div id="compliment-box"></div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvasLayer');
+        const ctx = canvas.getContext('2d');
+        let textLoaded = false;
+        let flowerAnimationId;
+        
+        function resizeCanvas() { 
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight; 
+        }
+        window.addEventListener('resize', resizeCanvas); 
+        resizeCanvas();
+
+        const flowers = Array.from({length: 35}, () => ({
+            x: Math.random() * window.innerWidth, 
+            y: Math.random() * -window.innerHeight - 20, 
+            char: ['🌸','🌹','🌷','🌻','🌺'][Math.floor(Math.random()*5)], 
+            speed: Math.random() * 1.5 + 1.5
+        }));
+
+        // FIXED AUDIO TRIGGER INSIDE USER INTERACTION CLICK
+        function startSurprise() {
+            const welcomeScreen = document.getElementById('welcome-screen');
+            welcomeScreen.style.opacity = '0';
+            setTimeout(() => { welcomeScreen.style.display = 'none'; }, 800);
+            
+            const audio = document.getElementById('birthday-audio');
+            audio.volume = 0.8;
+            
+            // Forces mobile and modern web browsers to play instantly on interaction
+            var playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("Audio started successfully!");
+                }).catch(error => {
+                    console.log("Autoplay was prevented by browser rules. Checking interaction.", error);
+                });
+            }
+            
+            confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+            setInterval(createSingleBalloon, 600);
+            animateFlowers();
+        }
+
+        function animateFlowers() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            flowers.forEach(f => {
+                ctx.font = "24px Arial"; 
+                ctx.fillText(f.char, f.x, f.y); 
+                f.y += f.speed;
+                if(f.y > canvas.height + 30) { 
+                    f.y = -30; 
+                    f.x = Math.random() * canvas.width; 
+                }
+            });
+            flowerAnimationId = requestAnimationFrame(animateFlowers);
+        }
+
+        function createSingleBalloon() {
+            const container = document.getElementById('balloons');
+            if (!container) return;
+            if (container.childElementCount > 25) { container.removeChild(container.firstChild); }
+
+            const colors = ['#ff4757', '#3498db', '#f1c40f', '#2ecc71', '#9b59b6', '#ff7f50'];
+            let b = document.createElement('div'); 
+            b.className = 'balloon';
+            b.style.left = Math.random() * 95 + 'vw'; 
+            b.style.background = colors[Math.floor(Math.random() * colors.length)];
+            
+            container.appendChild(b);
+            setTimeout(() => b.remove(), 9000);
+        }
+
+        function updateCounter() {
+            const diff = new Date() - new Date("June 12, 2009 00:00:00");
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('counter').innerHTML = 
+                `Radhika, you have completed your<br><span style="color: #ff4757; font-size: 1.4rem; font-weight:700;">${days.toLocaleString()}</span> Days, <span style="color: #ff4757; font-weight:700;">${hours}</span> Hours, <span style="color: #ff4757; font-weight:700;">${minutes}</span> Minutes, and <span style="color: #ff4757; font-weight:700;">${seconds}</span> Seconds here!`;
+        }
+        setInterval(updateCounter, 1000); 
+        updateCounter();
+
+        function revealAndType() {
+            if (textLoaded) return;
+            textLoaded = true;
+            
+            document.getElementById('wish-btn').style.display = 'none';
+            const heartBtn = document.getElementById('heart-clicker');
+            heartBtn.style.display = 'inline-block';
+            heartBtn.classList.add('pop-animation');
+            
+            const messageText = "Radhika, tumhari muskaan hamesha bani rahe! Stay blessed, keep laughing, and achieve all your dreams. 🎉⭐";
+            let index = 0;
+            const msgElement = document.getElementById('msg');
+            
+            function type() {
+                if (index < messageText.length) {
+                    msgElement.innerHTML += messageText.charAt(index);
+                    index++;
+                    setTimeout(type, 45); 
+                }
+            }
+            type();
+        }
+
+        const compliments = [
+            "You have the best smile! 😊",
+            "Keep shining like a star! ⭐",
+            "You are an amazing human being! ✨",
+            "Never stop laughing! 🌸",
+            "May all your dreams come true! 🚀",
+            "You make this world a better place! ❤️"
+        ];
+        
+        function showCompliment() {
+            const randomLine = compliments[Math.floor(Math.random() * compliments.length)];
+            const compBox = document.getElementById('compliment-box');
+            
+            compBox.classList.remove('pop-animation');
+            void compBox.offsetWidth; 
+            
+            compBox.innerText = randomLine;
+            compBox.classList.add('pop-animation');
+            
+            confetti({ particleCount: 20, angle: 60, spread: 45, origin: { x: 0, y: 0.7 } });
+            confetti({ particleCount: 20, angle: 120, spread: 45, origin: { x: 1, y: 0.7 } });
+        }
+
+        window.addEventListener('mousemove', (e) => spawnSparkle(e.clientX, e.clientY));
+        window.addEventListener('touchmove', (e) => {
+            if(e.touches.length > 0) { spawnSparkle(e.touches[0].clientX, e.touches[0].clientY); }
+        }, { passive: true });
+
+        function spawnSparkle(x, y) {
+            if (Math.random() > 0.22) return; 
+            let sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = x + 'px';
+            sparkle.style.top = y + 'px';
+            
+            let size = Math.random() * 7 + 4;
+            sparkle.style.width = size + 'px';
+            sparkle.style.height = size + 'px';
+            
+            let mx = (Math.random() - 0.5) * 80 + 'px';
+            let my = (Math.random() - 0.5) * 80 + 'px';
+            sparkle.style.setProperty('--mx', mx);
+            sparkle.style.setProperty('--my', my);
+            
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 1000);
+        }
+    </script>
+</body>
+</html>
